@@ -1,6 +1,8 @@
 package adventofcode_2023_3;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Engine {
 
@@ -42,16 +44,17 @@ public class Engine {
 
 	private ArrayList<int[]> findNumberAround() {
 		ArrayList<int[]> coordenates = new ArrayList<int[]>();
+		Map<String, Integer> mapcoords = new HashMap<String, Integer>();  
 		for (int i = 0; i < symbolsIndexes.size(); i++) {
 			int x = symbolsIndexes.get(i)[0];
 			int y = symbolsIndexes.get(i)[1];
-			System.out.println(x + "-" + y);
+	
 			int startXIndex = x - 1 < 0 ? 0 : x - 1;
 			int startYIndex = y - 1 < 0 ? 0 : y - 1;
 			int endXIndex = x + 1 > width - 1 ? width - 1 : x + 1;
 			int endYIndex = y + 1 > heigth - 1 ? heigth - 1 : y + 1;
-			System.out.println(
-					"THE RANGE IS GONNA BE: " + startXIndex + "-" + startYIndex + "; " + endXIndex + "-" + endYIndex);
+	
+			
 			for (int j = startXIndex; j <= endXIndex; j++) {
 				String line = engineLines.get(j);
 				for (int k = startYIndex; k <= endYIndex; k++) {
@@ -60,54 +63,85 @@ public class Engine {
 						continue;
 					}
 					int[] coordenate = new int[2];
-					coordenate[0] = j;
-					coordenate[1] = k;
+					coordenate[0] = k;
+					coordenate[1] = j;
 					coordenates.add(coordenate);
 					
-					int[] startNumberCoords= resolveNumber(coordenate);
+					int[] startNumberCoords= startCoordsNumber(coordenate);
 					
-					System.out.println("THERE'S IN " + j + "-" + k + ": " + character +"; and start at "+ startNumberCoords[0]+"-"+startNumberCoords[1]);
+					
+					int number= resolveNumberCoords(startNumberCoords);
+					
+					String key= startNumberCoords[0]+"-"+startNumberCoords[1];
+					if (!mapcoords.containsKey(key)) {
+						mapcoords.put(key,number);
+					}
+				
+					
+					
+				
+//					System.out.println("THERE'S IN " + j + "-" + k + ": " + character +"; and start at "+ startNumberCoords[0]+"-"+startNumberCoords[1]);
 				}
 			}
+			
+			
+			
+			
 		}
 
+			int Total = 0; 
+		
+		for (String key : mapcoords.keySet()) {
+			System.out.println(key + ":" + mapcoords.get(key));
+			
+			int number = Integer.valueOf( mapcoords.get(key));
+			Total+=number;
+			
+		}
+		
+		System.out.println("TOTAL: "+Total);
+		
+		
+		
 		return coordenates;
 	}
 
-	private int[] resolveNumber(int[] coordenates) {
-		int number = -1;
+	private int[] startCoordsNumber(int[] coordenates) {
 		int[] coordenatesStart = new int[2];
-		coordenatesStart[0] = -1;
-		coordenatesStart[1] = -1;
-
+		coordenatesStart[0] = coordenates[0];
+		coordenatesStart[1] = coordenates[1];
 		String line = engineLines.get(coordenates[1]);
-
-		for (int i = coordenates[0]; coordenatesStart[0] == -1 && i >= 0; i--) {
-
+		boolean NotFound = true;
+		
+		for (int i = coordenates[0]; NotFound && i >= 0; i--) {
 			char character = line.charAt(i);
-
-			if (Character.isDigit(character)&& i>0) {
+			if (Character.isDigit(character)) {
+				coordenatesStart[0]=i;
 				continue;
 			}
-			
-			coordenatesStart[0]=i;
-
+			NotFound= false;
 		}
-
-		for (int i = coordenates[0]; coordenatesStart[1]==-1&&i<=width-1; i++) {
-
-			char character = line.charAt(i);
-
-			if (Character.isDigit(character)&& i<width-1) {
-				continue;
-			}
-			
-			coordenatesStart[1]=i;
-			
-		}
-
 		return coordenatesStart;
-
+	}
+	
+	private int resolveNumberCoords(int[] coordenates) {
+		System.out.println(coordenates[0]+"-"+coordenates[1]);
+		int startIndex = coordenates[0];
+		int endIndex = coordenates[0];
+		String line = engineLines.get(coordenates[1]);
+		boolean NotFound = true;
+		for (int i = endIndex; NotFound && i<line.length(); i++) {
+			System.out.println(line.length()+"ERROR ACA:"+i);
+			char character = line.charAt(i);
+			if (Character.isDigit(character)) {
+				endIndex = i;
+				continue;
+			}
+			NotFound = false;
+		}
+		String numberString = line.substring(startIndex, endIndex+1);
+		return Integer.valueOf(numberString);
+				
 	}
 
 	private int getWidth() {

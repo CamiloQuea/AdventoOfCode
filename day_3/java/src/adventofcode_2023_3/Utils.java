@@ -12,7 +12,7 @@ public class Utils {
 
 		try {
 			Scanner reader = null;
-			URL url = getClass().getResource("input2.txt");
+			URL url = getClass().getResource("input.txt");
 			File file = new File(url.getPath());
 			reader = new Scanner(file);
 			while (reader.hasNext()) {

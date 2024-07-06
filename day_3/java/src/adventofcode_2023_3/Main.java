@@ -14,13 +14,7 @@ public class Main {
 		Engine engine = new Engine(engineLines);
 		
 		engine.firstPart();
-
-//		for (Iterator<String> iterator = texts.iterator(); iterator.hasNext();) {
-//			String line = iterator.next();
-//
-//		}
-
-//		System.out.println(engine.symbolsIndexes);
+		
 	}
 
 }
